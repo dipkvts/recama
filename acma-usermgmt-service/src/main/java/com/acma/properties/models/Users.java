@@ -6,12 +6,14 @@ package com.acma.properties.models;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Builder;
 import lombok.Data;
 
 /**
- * @author Deepak
- * @since Sept-18,2024
+ * @author narsi
+ * @since Sept-16,2024
  */
 @Data
 @Builder
@@ -35,6 +37,12 @@ public class Users implements Serializable {
 	
 	@Builder.Default
 	private boolean totp = false;
+	
+	@JsonIgnore
+	private String groupId;
+	
+	@JsonIgnore
+	private String userId;
 	
 	private List<String> realmRoles;
 	private UserAccess access;
