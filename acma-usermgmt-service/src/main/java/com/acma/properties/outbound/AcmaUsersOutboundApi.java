@@ -13,19 +13,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.acma.properties.models.Users;
+import com.acma.properties.outboundutils.AcmaOutboundUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,13 +63,11 @@ public class AcmaUsersOutboundApi {
 			throws RestClientException, URISyntaxException, JsonMappingException, JsonProcessingException {
 		log.info("IAM Users API {}", acma_users_api_url);
 
-		MultiValueMap<String, String> headersMap = new LinkedMultiValueMap<>();
-		headersMap.add("Authorization", "bearer " + accessToken);
 
-		HttpEntity<String> entity = new HttpEntity<>(headersMap);
-		try {
+		HttpEntity httpEntity = AcmaOutboundUtils.getHttpEntity(null, accessToken);
+
+        try {
 			long start = System.currentTimeMillis();
-			
 //			ResponseEntity<List<Users>> responseEntity = restTemplate.exchange(acma_users_api_url, HttpMethod.GET,
 //					entity, new ParameterizedTypeReference<List<Users>>() {
 //					});
@@ -89,7 +84,7 @@ public class AcmaUsersOutboundApi {
 //			}
 			 
 			
-			ResponseEntity<?> responseEntity = restTemplate.exchange(acma_users_api_url, HttpMethod.GET, entity, Object.class);
+			ResponseEntity<?> responseEntity = restTemplate.exchange(acma_users_api_url, HttpMethod.GET, httpEntity, Object.class);
 			log.info("API Response Code is {}", responseEntity.getStatusCode().value());
 			if (HttpStatus.OK.value() == responseEntity.getStatusCode().value()) {
 				List<Users> usersListResp = (List<Users>) responseEntity.getBody();
@@ -121,15 +116,14 @@ public class AcmaUsersOutboundApi {
 	public List<Users> getAllUsersOfAGroup(String groupId,String accessToken)
 			throws RestClientException, URISyntaxException, JsonMappingException, JsonProcessingException {
 		log.info("getAllPropertyOwners {}", acma_groups_api_url);
-		acma_groups_api_url = acma_groups_api_url+"/"+groupId+"/members";
-		log.info("acma_groups_api_url {}", acma_groups_api_url);
-		
-		MultiValueMap<String, String> headersMap = new LinkedMultiValueMap<>();
-		headersMap.add("Authorization", "bearer " + accessToken);
+		String acmaUsersApi = acma_groups_api_url+"/"+groupId+"/members";
+		log.info("acmaUsersApi {}", acmaUsersApi);
 
-		HttpEntity<String> entity = new HttpEntity<>(headersMap);
+
+
+		HttpEntity httpEntity = AcmaOutboundUtils.getHttpEntity(null, accessToken);
 		try {
-			ResponseEntity<?> responseEntity = restTemplate.exchange(acma_groups_api_url, HttpMethod.GET, entity, Object.class);
+			ResponseEntity<?> responseEntity = restTemplate.exchange(acmaUsersApi, HttpMethod.GET, httpEntity, Object.class);
 			log.info("API Response Code is {}", responseEntity.getStatusCode().value());
 			if (HttpStatus.OK.value() == responseEntity.getStatusCode().value()) {
 				List<Users> usersListResp = (List<Users>) responseEntity.getBody();
@@ -153,15 +147,11 @@ public class AcmaUsersOutboundApi {
 	}
 
 	public Users createUser(Users user, String accessToken) {
-		
-		MultiValueMap<String, String> headersMap = new LinkedMultiValueMap<>();
-	    headersMap.add("Authorization", "Bearer "+accessToken);
-	    headersMap.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-		
-	    HttpEntity requestBody = new HttpEntity<>(user,headersMap);
+
+		HttpEntity httpEntity = AcmaOutboundUtils.getHttpEntity(user, accessToken);
 	    
 	    try {
-	    	ResponseEntity<?> responseEntity = restTemplate.postForEntity(acma_users_api_url, requestBody, null);
+	    	ResponseEntity<?> responseEntity = restTemplate.postForEntity(acma_users_api_url, httpEntity, null);
 		    log.info("API Response Code is {}", responseEntity.getStatusCode().value());
 			if (HttpStatus.CREATED.value() == responseEntity.getStatusCode().value()) {
 				HttpHeaders responseHeaders = responseEntity.getHeaders();
@@ -202,17 +192,23 @@ public class AcmaUsersOutboundApi {
 		String provisioningApi = acma_users_api_url+"/"+userId+"/groups/"+groupId;
 		log.info("User Provisioning:: API is {}", provisioningApi);
 		
-		MultiValueMap<String, String> headersMap = new LinkedMultiValueMap<>();
-		headersMap.add("Authorization", "Bearer "+accessToken);
-		
-		HttpEntity request = new HttpEntity<>(headersMap);
+
+		HttpEntity httpEntity = AcmaOutboundUtils.getHttpEntity(null, accessToken);
 		 Map<String, String> param = new HashMap<String, String>();
 		 
-		 ResponseEntity responseEntity = restTemplate.exchange(provisioningApi, HttpMethod.PUT, request, ResponseEntity.class,param);
-		 log.info("User Provisioning:: Response Code is {}", responseEntity.getStatusCode().value());
-		 if(HttpStatus.NO_CONTENT.value() == responseEntity.getStatusCode().value()) {
-			 groupProvisioned = true; 
-		 }
+		 try {
+			 ResponseEntity responseEntity = restTemplate.exchange(provisioningApi, HttpMethod.PUT, httpEntity, ResponseEntity.class,param);
+			 log.info("User Provisioning:: Response Code is {}", responseEntity.getStatusCode().value());
+			 if(HttpStatus.NO_CONTENT.value() == responseEntity.getStatusCode().value()) {
+				 groupProvisioned = true; 
+			 }else {
+				 throw new RuntimeException("Something went wrong while provisioining the user");
+			 }
+		 }catch (Exception e) {
+			 throw new RuntimeException(e);
+		}
+		 
+		
 		return groupProvisioned;
 		
 	}
@@ -226,18 +222,23 @@ public class AcmaUsersOutboundApi {
 		String provisioningApi = acma_users_api_url+"/"+userId+"/groups/"+groupId;
 		log.info("User Provisioning:: API is {}", provisioningApi);
 		
-		MultiValueMap<String, String> headersMap = new LinkedMultiValueMap<>();
-		headersMap.add("Authorization", "Bearer "+accessToken);
-		
-		HttpEntity request = new HttpEntity<>(headersMap);
+		HttpEntity httpEntity = AcmaOutboundUtils.getHttpEntity(null, accessToken);
 		Map<String, String> param = new HashMap<String, String>();
+		 try {
+			 ResponseEntity responseEntity = restTemplate.exchange(provisioningApi, HttpMethod.DELETE, httpEntity, ResponseEntity.class,param);
+			 log.info("User Provisioning:: Response Code is {}", responseEntity.getStatusCode().value());
+			 if(HttpStatus.NO_CONTENT.value() == responseEntity.getStatusCode().value()) {
+				 groupDeProvisioned = true; 
+			 }else {
+				 throw new RuntimeException("Something went wrong wile user is deprovisioing");
+			 }
+		 }catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 		 
-		 ResponseEntity responseEntity = restTemplate.exchange(provisioningApi, HttpMethod.DELETE, request, ResponseEntity.class,param);
-		 log.info("User Provisioning:: Response Code is {}", responseEntity.getStatusCode().value());
-		 if(HttpStatus.NO_CONTENT.value() == responseEntity.getStatusCode().value()) {
-			 groupDeProvisioned = true; 
-		 }
 		return groupDeProvisioned;
 		
 	}
+
+
 }
