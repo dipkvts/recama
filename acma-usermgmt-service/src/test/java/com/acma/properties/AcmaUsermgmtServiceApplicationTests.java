@@ -40,13 +40,12 @@ class AcmaUsermgmtServiceApplicationTests {
 	
 	@BeforeAll
 	public static void init() {
-		newUser = Users.builder()
-				.firstName("Deepak092401")
-				.lastName("test")
-				.email("Deepak092401@yopmail.com")
-				.username("Deepak092401")
-				.build();
-		accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ5cHFuM2lZR0xDV1pKcl8yUlVpZmlqcEVzZWF3MUJBeHd5SnpqSk5neHFzIn0.eyJleHAiOjE3MjcyMzM1NjYsImlhdCI6MTcyNzIzMjA2NiwianRpIjoiMzFjY2MwNTQtMTUyOS00OTkwLWJmNzAtNTRhNmRlZmM5ZWI2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgxL3JlYWxtcy9hY21hIiwiYXVkIjpbInJlYWxtLW1hbmFnZW1lbnQiLCJhY2NvdW50Il0sInN1YiI6ImZlZjQxMzA5LTk4MWMtNDY1MS1hMDRjLTIxN2VlNjI5N2ZmZCIsInR5cCI6IkJlYXJlciIsImF6cCI6InN0YXRlZm9ybS1zdmMiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLWFjbWEiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsicmVhbG0tbWFuYWdlbWVudCI6eyJyb2xlcyI6WyJtYW5hZ2UtdXNlcnMiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiY2xpZW50SG9zdCI6IjE3Mi4xOC4wLjEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtc3RhdGVmb3JtLXN2YyIsImNsaWVudEFkZHJlc3MiOiIxNzIuMTguMC4xIiwiY2xpZW50X2lkIjoic3RhdGVmb3JtLXN2YyJ9.lO7PgfKLFDlyTYnkvMRwKMM4z-IK6E11ZyWcllA7FrKmRzlJz90mHj_mvMVeIBTznzEQZHzxlKe9ym2tV35bEYXZ8owIGNF91TIjbfdkS6TQ-m8y_iOAocjNyKq3rJLwbsiklTUIZCWouwVWBdWdC48Htk_hxQpvDGQlmVwj6ZJFQ5SnBeS8Q2f3HGEOHUUFaOAhb6gW11E6lOR1mdJSnIb6iKEfFL7uNVYJOt9yNmpxiJjaVhE8h4Y7y-ajBR3kZUR7Zsexx4m21igiVIJEkPz-_ifJNZ8XJcLick-o8cjWfYIQNRboMo0OkwbqvqoaNWlLO5b5i4vFJPgPbHOdEQ";
+		newUser = new Users();
+		newUser.setFirstName("Deepak092401");
+		newUser.setLastName("test");
+		newUser.setEmail("Deepak092401@yopmail.com");
+		newUser.setUsername("Deepak092401");
+		accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ5cHFuM2lZR0xDV1pKcl8yUlVpZmlqcEVzZWF3MUJBeHd5SnpqSk5neHFzIn0.eyJleHAiOjE3MjczMTY1OTMsImlhdCI6MTcyNzMxNTA5MywianRpIjoiZDcwMmIyMDItODliMS00YmJiLTgyNGMtMmVkYjkzNWE2NTNhIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgxL3JlYWxtcy9hY21hIiwiYXVkIjpbInJlYWxtLW1hbmFnZW1lbnQiLCJhY2NvdW50Il0sInN1YiI6ImZlZjQxMzA5LTk4MWMtNDY1MS1hMDRjLTIxN2VlNjI5N2ZmZCIsInR5cCI6IkJlYXJlciIsImF6cCI6InN0YXRlZm9ybS1zdmMiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLWFjbWEiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsicmVhbG0tbWFuYWdlbWVudCI6eyJyb2xlcyI6WyJtYW5hZ2UtdXNlcnMiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiY2xpZW50SG9zdCI6IjE3Mi4xOC4wLjEiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJzZXJ2aWNlLWFjY291bnQtc3RhdGVmb3JtLXN2YyIsImNsaWVudEFkZHJlc3MiOiIxNzIuMTguMC4xIiwiY2xpZW50X2lkIjoic3RhdGVmb3JtLXN2YyJ9.RV3_liURPXaWStey4CYFFv3RaEe2zxrPHaqblgOYg1n8uzNavJ56TSByosCBOEU8v_eTDlCV9lv5jilar6KiNwR6MpHH8m4JM8vB8Ey-4UVBTXCN_I43F-1INBER8AxBggp5eNl0S9j12wfGWi2KhCRLypB4020A33MhjMOjT6N0Hy7KRbK5O-Zg45867WaHzRsnOOPA9tUHslLVpPobfO7cjzlY0hiEuF0b-qXLxJawT6oAK-oBGgXZb_awvERLKCVIFfqShcsEw2XpqnxkfFnjwYm8vY6cP_vv0P2TwJRaEihUtq_yMgAfDTxB6eUNvySW4CiwS0w9IFUHvvBDKw";
 		propertyOwnersGroupId= "f955f066-2a7b-4058-bf7f-9b48b43b38b5";
 		acmaBrokersGroupId = "c307af52-8088-4686-a00a-5f4849dbbbf9";
 		acmaAgentsGroupId = "f3ae4ba0-b8a8-4d70-8f0f-a8cdde4939cf";
@@ -74,7 +73,7 @@ class AcmaUsermgmtServiceApplicationTests {
 		newUser = usersAPI.createUser(newUser, accessToken);
 		
 		assertThat(newUser);
-		assertThat(newUser.getUserId());
+		assertThat(newUser.getId());
 		assertThat(newUser.getGroupId());
 		
 	}
@@ -92,7 +91,7 @@ class AcmaUsermgmtServiceApplicationTests {
 		newUser = usersAPI.createUser(newUser, accessToken);
 		
 		assertThat(newUser);
-		assertThat(newUser.getUserId());
+		assertThat(newUser.getId());
 		assertThat(newUser.getGroupId());
 		
 	}
@@ -111,7 +110,7 @@ class AcmaUsermgmtServiceApplicationTests {
 		newUser = usersAPI.createUser(newUser, accessToken);
 		
 		assertThat(newUser);
-		assertThat(newUser.getUserId());
+		assertThat(newUser.getId());
 		assertThat(newUser.getGroupId());
 		
 	}
@@ -119,7 +118,7 @@ class AcmaUsermgmtServiceApplicationTests {
 	//@Test
 	//@Order(2)
 	public void testDeprovUser() {
-		boolean isUserDep = usersAPI.DeProvisionUserUnderAGroup(newUser.getUserId(), newUser.getGroupId(), accessToken);
+		boolean isUserDep = usersAPI.DeProvisionUserUnderAGroup(newUser.getId(), newUser.getGroupId(), accessToken);
 		assertThat(isUserDep);
 		
 	}
