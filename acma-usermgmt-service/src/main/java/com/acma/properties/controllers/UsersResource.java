@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.acma.properties.beans.UsersBean;
@@ -45,10 +46,10 @@ public class UsersResource {
 		this.request = request;
 	}
 	
-	@GetMapping(value = "/users")
+	@GetMapping(value = {"/users","/users/"})
 	@Operation(description = "getAllUsers",security = @SecurityRequirement(name="bearerAuth"))
-	public ResponseEntity<List<UsersBean>> getAllUsers() throws UsersException{
-		log.info("UsersResource::getAllUsers");
+	public ResponseEntity<List<UsersBean>> getAllUsers(@RequestHeader(name = "userType") String userType) throws UsersException{
+		log.info("UsersResource::getAllUsers User Type is "+userType);
 		String bearerToken = request.getHeader("Authorization");
 		log.info("bearer token is {}",bearerToken);
 		if(StringUtils.hasText(bearerToken) && (StringUtils.hasText(bearerPrefix))){
@@ -103,7 +104,7 @@ public class UsersResource {
 		return ResponseEntity.ok(acmaAgentsList);
 	}
 	
-	@PostMapping(value = "/users")
+	@PostMapping(value = {"/users","/users/"})
 	@Operation(description = "createUser",security = @SecurityRequirement(name="bearerAuth"))
 	public ResponseEntity<UsersBean> createUser(@Valid @RequestBody UsersBean usersBean){
 		log.info("UsersResource::createUser"+usersBean.toString());
@@ -113,7 +114,7 @@ public class UsersResource {
 			bearerToken =  StringUtils.replace(bearerToken, bearerPrefix, "");		
 		}
 		log.info("token is {}",bearerToken);
-		//usersBean = usersService.createUser(usersBean, bearerToken);
+		usersBean = usersService.createUser(usersBean, bearerToken);
 		return new ResponseEntity<UsersBean>(usersBean, HttpStatus.CREATED);
 	}
 	
